@@ -49,11 +49,23 @@ cmake_ninja_workdir = /home/grimm/CLionProjects/interceptor/cmake-build-debug/
 
 build cmake_object_order_depends_target_interceptor: phony || .
 
-build CMakeFiles/interceptor.dir/main.c.o: C_COMPILER__interceptor_unscanned_Debug /home/grimm/CLionProjects/interceptor/main.c || cmake_object_order_depends_target_interceptor
-  DEP_FILE = CMakeFiles/interceptor.dir/main.c.o.d
+build CMakeFiles/interceptor.dir/hooker/main.c.o: C_COMPILER__interceptor_unscanned_Debug /home/grimm/CLionProjects/interceptor/hooker/main.c || cmake_object_order_depends_target_interceptor
+  DEP_FILE = CMakeFiles/interceptor.dir/hooker/main.c.o.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles/interceptor.dir
-  OBJECT_FILE_DIR = CMakeFiles/interceptor.dir
+  OBJECT_FILE_DIR = CMakeFiles/interceptor.dir/hooker
+
+build CMakeFiles/interceptor.dir/dll/blackjack.c.o: C_COMPILER__interceptor_unscanned_Debug /home/grimm/CLionProjects/interceptor/dll/blackjack.c || cmake_object_order_depends_target_interceptor
+  DEP_FILE = CMakeFiles/interceptor.dir/dll/blackjack.c.o.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/interceptor.dir
+  OBJECT_FILE_DIR = CMakeFiles/interceptor.dir/dll
+
+build CMakeFiles/interceptor.dir/other/enum.c.o: C_COMPILER__interceptor_unscanned_Debug /home/grimm/CLionProjects/interceptor/other/enum.c || cmake_object_order_depends_target_interceptor
+  DEP_FILE = CMakeFiles/interceptor.dir/other/enum.c.o.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/interceptor.dir
+  OBJECT_FILE_DIR = CMakeFiles/interceptor.dir/other
 
 
 # =============================================================================
@@ -63,7 +75,7 @@ build CMakeFiles/interceptor.dir/main.c.o: C_COMPILER__interceptor_unscanned_Deb
 #############################################
 # Link the executable interceptor
 
-build interceptor: C_EXECUTABLE_LINKER__interceptor_Debug CMakeFiles/interceptor.dir/main.c.o
+build interceptor: C_EXECUTABLE_LINKER__interceptor_Debug CMakeFiles/interceptor.dir/hooker/main.c.o CMakeFiles/interceptor.dir/dll/blackjack.c.o CMakeFiles/interceptor.dir/other/enum.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/interceptor.dir
   POST_BUILD = :
