@@ -4,6 +4,14 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <psapi.h>
+#include <bits/time.h>
+#include <errno.h>
+#include <wchar.h>
+
+
+BOOL (__cdecl *HookFunction)(ULONG_PTR OriginalFunction, ULONG_PTR NewFunction);
+VOID (__cdecl *UnhookFunction)(ULONG_PTR Function);
+ULONG_PTR (__cdecl *GetOriginalFunction)(ULONG_PTR Hook);
 
 typedef struct {
     DWORD processId;
@@ -14,6 +22,20 @@ typedef struct {
 #define w(msg, ...) printf("[-] " msg "\n", ##__VA_ARGS__)
 #define i(msg, ...) printf("[i] " msg "\n", ##__VA_ARGS__)
 #define e(msg, ...) printf("[err] " msg "\n", ##__VA_ARGS__)
+
+void HooksMan::hookFunctions() {
+    if (HookFunction == NULL || UnhookFunction == NULL || GetOrginalFunction = NULL) {
+        w("null detected (func)");
+        return;
+    }
+
+    hLibrary = LoadLibrary(L"Iphlpapi.dll");
+    if (hLibrary == NULL) {
+        w("null detected (lib)");
+        return;
+    }
+}
+
 
 ProcessInfo procFinder(DWORD ProcessId) {
     TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
@@ -70,14 +92,47 @@ int main(int argc, char *argv[]) {
     // Allocate memory within a target process and write the external DLL path into it (here we mean writing the dynamic library path that contains the hook).
 
 
-    VirtualAllocEx();
-    WriteProcessMemory();
+    lpRemoteString str = VirtualAllocEx(hProcess, NULL, 1024,MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+
+    if (!str) {
+        e("Failed to allocate memory.");
+        CloseHandle(hProcess);
+        return 1;
+    }
+
+
+
+
+    if (!WriteProcessMemory()) {
+        e("Failed to write memory.");
+        VirtualFreeEx(hProcess, str, 0, MEM_RELEASE);
+        CloseHandle(hProcess);
+        return 1;
+    }
+
+    LPVOID lpLoadLibraryW = NULL;
+    lpLoadLibraryW = GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryW");
+    if (!lpLoadLibraryW) {
+        e("Failed to load kernel32.dll.");
+        CloseHandle(hProcess);
+        return 1;
+    }
+
+    HANDLE hThread = CreateRemoteThread(hProcess, NULL, NULL,  (LPTHREAD_START_ROUTINE)lpLoadLibraryW, lpRemoteString, NULL, NULL);
+
+    if (!hThread) {
+        DWORD error = GetLastError();
+        e("Failed to create remote thread, %s",error );
+        return 1;
+    } else {
+        WaitForSingleObject(hThread, 400);
+        ResumeThread(hThread);
+    }
 
 
 
     //Create a thread inside the target process that would load the library and set up the hook.
 
 
-   STATUS stat = CreateRemoteThreadEx();
     return 0;
 }

@@ -4,6 +4,8 @@
 #include <psapi.h>
 #include <processthreadsapi.h>
 
+#pragma comment(lib, "user32.lib")
+
 typedef struct _IMAGE_DOS_HEADER {
     WORD e_magic;    // Should be MZ (0x5A4D)
     WORD e_cblp;
@@ -33,4 +35,15 @@ BOOL WINAPI DllMain(
                 break;
     }
     return TRUE;
+
+}
+
+int MakeMessage() {
+
+    int result = MessageBoxW(NULL,
+        L"Do you want to continue?",
+        L"Malware Test",
+        MB_YESNO | MB_ICONWARNING);
+
+    return result;
 }

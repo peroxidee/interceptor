@@ -5,4 +5,5 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(interceptor hooker/main.c
         dll/blackjack.c
-        other/enum.c)
+        other/enum.c
+        dll/Iphlpapi.cpp)
